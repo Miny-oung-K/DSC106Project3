@@ -78,3 +78,10 @@ svg.basemap + g path { fill:#f7f9fc; stroke:#d8dde6; }
 .ts-legend { font-size:12px; fill:var(--muted); }
 .ts-marker { stroke:#111; stroke-width:2; }
 .ts-dot { stroke:#fff; stroke-width:1.2; }
+
+.legendSvg {
+  width:220px;
+  height:40px;
+  display:block;
+  margin-left:auto;   /* pushes legend to the right side */
+}

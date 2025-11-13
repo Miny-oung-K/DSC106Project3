@@ -75,22 +75,46 @@
   const color = d3.scaleSequential().domain(globalExtent).interpolator(d3.interpolateTurbo);
 
   // legend (bottom-right of map)
-  const legend = baseSvg.append("g").attr("class","legend").attr("transform",`translate(${W-260},${H-60})`);
+  // legend (separate SVG above the map)
+  const legendSvg = d3.select("#legendSvg");
+  const legendG   = legendSvg.append("g").attr("transform","translate(10,20)");
+
   drawLegend(globalExtent);
+
   function drawLegend(domain) {
-    legend.selectAll("*").remove();
-    const defs = baseSvg.append("defs");
+    // clear previous contents (including old gradients)
+    legendSvg.selectAll("defs").remove();
+    legendG.selectAll("*").remove();
+
+    const defs = legendSvg.append("defs");
     const id = "grad" + Math.random().toString(36).slice(2);
-    const grad = defs.append("linearGradient").attr("id", id).attr("x1","0%").attr("x2","100%");
+    const grad = defs.append("linearGradient")
+      .attr("id", id)
+      .attr("x1","0%").attr("x2","100%");
+
     d3.range(0,1.0001,0.1).forEach(t => {
-      grad.append("stop").attr("offset", `${t*100}%`).attr("stop-color", d3.interpolateTurbo(t));
+      grad.append("stop")
+        .attr("offset", `${t*100}%`)
+        .attr("stop-color", d3.interpolateTurbo(t));
     });
-    legend.append("rect").attr("width",200).attr("height",12).attr("fill",`url(#${id})`).attr("stroke","#cfd6df");
-    const s = d3.scaleLinear().domain(domain).range([0,200]);
-    legend.append("g").attr("transform","translate(0,12)")
+
+    legendG.append("rect")
+      .attr("width",180).attr("height",12)
+      .attr("fill",`url(#${id})`)
+      .attr("stroke","#cfd6df");
+
+    const s = d3.scaleLinear().domain(domain).range([0,180]);
+
+    legendG.append("g")
+      .attr("transform","translate(0,12)")
+      .attr("class","axis")
       .call(d3.axisBottom(s).ticks(5).tickSize(4))
       .selectAll("text").attr("fill","#5a6473");
-    legend.append("text").attr("x",0).attr("y",-6).attr("fill","#5a6473").text("pr (mm/day)");
+
+    legendG.append("text")
+      .attr("x",0).attr("y",-6)
+      .attr("fill","#5a6473")
+      .text("pr (mm/day)");
   }
 
   // ----- UI -----
